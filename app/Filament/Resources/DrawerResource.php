@@ -24,11 +24,14 @@ class DrawerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->reactive()
-                ->afterStateUpdated(function ($set, $state) {
-                    $set('slug', Str::slug($state));
-                }),
-                Forms\Components\TextInput::make('slug')->required()->disabled(),
+            Forms\Components\TextInput::make('name')
+            ->live(debounce: 500)
+            ->afterStateUpdated(function (\Filament\Forms\Set $set, ?string $state) {
+                $set('slug', Str::slug($state));
+            }),
+
+            Forms\Components\TextInput::make('slug')
+            ->disabled()
             ]);
     }
 
