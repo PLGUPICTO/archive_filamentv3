@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Filament\Resources\DrawerResource\Pages;
+namespace App\Filament\Resources\FolderResource\Pages;
 
 use Filament\Actions;
 use Illuminate\Support\Str;
-use App\Filament\Resources\DrawerResource;
+use App\Filament\Resources\FolderResource;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateDrawer extends CreateRecord
+class CreateFolder extends CreateRecord
 {
-    protected static string $resource = DrawerResource::class;
+    protected static string $resource = FolderResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['slug'] = Str::slug($data['name']);
-        $data['office_id'] = 1;
 
         return $data;
     }

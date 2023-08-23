@@ -9,6 +9,9 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DrawerResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,41 +22,50 @@ class DrawerResource extends Resource
     protected static ?string $model = Drawer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Settings';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-            Forms\Components\TextInput::make('name')
-            ->live(debounce: 500)
-            ->afterStateUpdated(function (\Filament\Forms\Set $set, ?string $state) {
-                $set('slug', Str::slug($state));
-            }),
-
-            Forms\Components\TextInput::make('slug')
-            ->disabled()
+                Forms\Components\TextInput::make('name')
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'sm' => 3,
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('office_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Stack::make([
+                    Tables\Columns\TextColumn::make('name')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('slug')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('office_id')
+                        ->numeric()
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ]),
+                Panel::make([
+                    Stack::make([
+                        TextColumn::make('phone')->description('This is some')
+                        ->icon('heroicon-m-phone'),
+                        TextColumn::make('email')
+                        ->icon('heroicon-m-envelope'),
+                    ]),
+                ])->collapsible(),
             ])
             ->filters([
                 //
